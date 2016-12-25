@@ -11,6 +11,8 @@ namespace ChineseWhispers
         static void Main(string[] args)
         {
             ///sss
+            int i = 0;
+            
         }
     }
 }
