@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace ChineseWhispers
 {
-    class Program
+    class CWsystem
     {
-        static void Main(string[] args)
+        rx rx;
+        tx tx;
+        public CWsystem()
         {
-            rx rx = new rx();
-            tx tx = new tx();
-            tx.sendRequests();
+            rx = new rx();
+            tx = new tx();
         }
     }
 }
