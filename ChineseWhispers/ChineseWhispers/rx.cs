@@ -43,19 +43,23 @@ namespace ChineseWhispers
         }
         public void sendOffer()
         {
-            Socket accepted = udp.Accept();
-            
-            Buffer = new byte[accepted.SendBufferSize];
-            int bytesRead = accepted.Receive(Buffer);
-            byte[] formatted = new byte[bytesRead];
-            for (int i = 0; i < bytesRead; i++)
+            while (true)
             {
-                formatted[i] = Buffer[i];
+                Socket accepted = udp.Accept();
+
+                Buffer = new byte[accepted.SendBufferSize];
+                int bytesRead = accepted.Receive(Buffer);
+                byte[] formatted = new byte[bytesRead];
+                for (int i = 0; i < bytesRead; i++)
+                {
+                    formatted[i] = Buffer[i];
+                }
+                string strData = Encoding.ASCII.GetString(formatted);
+                EndPoint cameFrom = accepted.RemoteEndPoint;
+                byte[] msg = Encoding.ASCII.GetBytes(strData + ipLocal.Address + ((IPEndPoint)(tcpListener.LocalEndPoint)).Port.ToString());
+                udp.SendTo(msg, cameFrom);
+                Console.WriteLine("get request send offer");
             }
-            string strData = Encoding.ASCII.GetString(formatted);
-            EndPoint cameFrom= accepted.RemoteEndPoint;
-            byte[] msg = Encoding.ASCII.GetBytes(strData + ipLocal.Address + ((IPEndPoint)(tcpListener.LocalEndPoint)).Port.ToString());
-            udp.SendTo(msg, cameFrom);
         }
         public string TcpReciveConnection()
         {
