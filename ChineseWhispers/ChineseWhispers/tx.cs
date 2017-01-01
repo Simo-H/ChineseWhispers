@@ -29,6 +29,7 @@ namespace ChineseWhispers
             udp.EnableBroadcast = true;
             byte[] msg = Encoding.ASCII.GetBytes("Networking17" + new Random().Next());
             udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
+            Console.WriteLine("Sending Broadcast...");
             
         }
 
@@ -43,7 +44,7 @@ namespace ChineseWhispers
                 {
                     Socket handler = udp.Accept();
                     string data = null;
-
+                    Console.WriteLine("Message accepted");
                     // An incoming connection needs to be processed.
                     while (true)
                     {
@@ -56,6 +57,7 @@ namespace ChineseWhispers
                         }
                     }
                     EndPoint remoteEndPoint = handler.RemoteEndPoint;
+                    Console.WriteLine("Message: "+ data);
                 }
             }
                 catch (Exception e)
