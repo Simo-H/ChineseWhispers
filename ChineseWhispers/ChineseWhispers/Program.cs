@@ -10,9 +10,8 @@ namespace ChineseWhispers
     {
         static void Main(string[] args)
         {
-            rx rx = new rx();
-            tx tx = new tx();
-            tx.SendRequests();
+            CWsystem cw = new CWsystem();
+            cw.run();
         }
     }
 }
