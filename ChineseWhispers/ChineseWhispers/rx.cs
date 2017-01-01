@@ -15,20 +15,22 @@ namespace ChineseWhispers
         bool on;
         Socket tcpListener;
         Socket udp;
-        IPEndPoint ipLocal;
+        IPAddress ipLocal;
         public rx()
         {
             on = false;
-            udp = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
-            ipLocal = (IPEndPoint)tcpListener.LocalEndPoint;
+
+            udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+            ipLocal = GetLocalIPAddress();
 
 
                     for (int i = 6001; i < 7000; i++)
                     {
                         try {
                             tcpListener = new Socket(AddressFamily.InterNetwork,SocketType.Stream, ProtocolType.Tcp);
-                            tcpListener.Bind(new IPEndPoint(ipLocal.Address, i));
-                            udp.Bind(new IPEndPoint(ipLocal.Address, 6000));
+                            tcpListener.Bind(new IPEndPoint(ipLocal, i));
+                            udp.Bind(new IPEndPoint(ipLocal, 6000));
 
                             break;
                         } 
@@ -56,7 +58,7 @@ namespace ChineseWhispers
                 }
                 string strData = Encoding.ASCII.GetString(formatted);
                 EndPoint cameFrom = accepted.RemoteEndPoint;
-                byte[] msg = Encoding.ASCII.GetBytes(strData + ipLocal.Address + ((IPEndPoint)(tcpListener.LocalEndPoint)).Port.ToString());
+                byte[] msg = Encoding.ASCII.GetBytes(strData + ipLocal + ((IPEndPoint)(tcpListener.LocalEndPoint)).Port.ToString());
                 udp.SendTo(msg, cameFrom);
                 Console.WriteLine("get request send offer");
             }
@@ -86,7 +88,18 @@ namespace ChineseWhispers
             return strData;
         }
 
-
+        public static IPAddress GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip;
+                }
+            }
+            throw new Exception("Local IP Address Not Found!");
+        }
 
 
     }
