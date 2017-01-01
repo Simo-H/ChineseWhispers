@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,23 +42,16 @@ namespace ChineseWhispers
                     }                   
                        
             tcpListener.Listen(1);
-            udp.Listen(1);
+            //udp.Listen(1);
         }
         public void sendOffer()
         {
             while (true)
             {
-                Socket accepted = udp.Accept();
-
-                Buffer = new byte[accepted.SendBufferSize];
-                int bytesRead = accepted.Receive(Buffer);
-                byte[] formatted = new byte[bytesRead];
-                for (int i = 0; i < bytesRead; i++)
-                {
-                    formatted[i] = Buffer[i];
-                }
-                string strData = Encoding.ASCII.GetString(formatted);
-                EndPoint cameFrom = accepted.RemoteEndPoint;
+                Byte[] dataBuffer = new byte[20];
+                udp.Receive(dataBuffer);
+                string strData = Encoding.ASCII.GetString(dataBuffer);
+                EndPoint cameFrom = udp.RemoteEndPoint;
                 byte[] msg = Encoding.ASCII.GetBytes(strData + ipLocal + ((IPEndPoint)(tcpListener.LocalEndPoint)).Port.ToString());
                 udp.SendTo(msg, cameFrom);
                 Console.WriteLine("get request send offer");

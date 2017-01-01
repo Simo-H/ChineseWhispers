@@ -21,7 +21,7 @@ namespace ChineseWhispers
         {
             on = false;
             tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            udp = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+            udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
         }
         public void SendRequests()
@@ -37,26 +37,20 @@ namespace ChineseWhispers
         {
             try
             {
-                IPEndPoint endpoint = (IPEndPoint)udp.LocalEndPoint;
-                udp.Bind(endpoint);
-                udp.Listen(1);
+                //IPEndPoint endpoint = (IPEndPoint)udp.LocalEndPoint;
+                udp.Bind(new IPEndPoint(rx.GetLocalIPAddress(),0));
+                //udp.Listen(1);
                 while (true)
                 {
-                    Socket handler = udp.Accept();
+                    byte[] dataByte = new byte[26];
+                    udp.Receive(dataByte);
                     string data = null;
                     Console.WriteLine("Message accepted");
                     // An incoming connection needs to be processed.
-                    while (true)
-                    {
-                        byte[] bytes = new byte[1024];
-                        int bytesRec = handler.Receive(bytes);
-                        data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                        if (data.IndexOf("<EOF>") > -1)
-                        {
-                            break;
-                        }
-                    }
-                    EndPoint remoteEndPoint = handler.RemoteEndPoint;
+                    
+                    data += Encoding.ASCII.GetString(dataByte);
+                    
+                    //EndPoint remoteEndPoint = handler.RemoteEndPoint;
                     Console.WriteLine("Message: "+ data);
                 }
             }
