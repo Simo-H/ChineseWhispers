@@ -12,7 +12,7 @@ namespace ChineseWhispers
         {
             rx rx = new rx();
             tx tx = new tx();
-            tx.sendRequests();
+            tx.SendRequests();
         }
     }
 }

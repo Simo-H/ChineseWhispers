@@ -17,8 +17,8 @@ namespace ChineseWhispers
         {
             on = false;
             udp = new UdpClient(6000);
-            IPHostEntry host;            
-            host = Dns.GetHostEntry(Dns.GetHostName());
+            
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
