@@ -22,6 +22,8 @@ namespace ChineseWhispers
             on = false;
             tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            IPEndPoint endpoint = new IPEndPoint(rx.GetLocalIPAddress(), 0);
+            udp.Bind(endpoint);
 
         }
         public void SendRequests()
@@ -37,8 +39,6 @@ namespace ChineseWhispers
         {
             try
             {
-                //IPEndPoint endpoint = (IPEndPoint)udp.LocalEndPoint;
-                udp.Bind(new IPEndPoint(rx.GetLocalIPAddress(),0));
                 //udp.Listen(1);
                 while (true)
                 {
@@ -57,7 +57,7 @@ namespace ChineseWhispers
                 catch (Exception e)
             {
                 Console.WriteLine(e);
-                
+                udp.Close();
             }
         } 
 
