@@ -48,7 +48,7 @@ namespace ChineseWhispers
         {
             while (true)
             {
-                Byte[] dataBuffer = new byte[26];
+                Byte[] dataBuffer = new byte[20];
                 try
                 {
                     IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
