@@ -48,17 +48,30 @@ namespace ChineseWhispers
         {
             while (true)
             {
-                Byte[] dataBuffer = new byte[26];
+                byte[] dataBuffer = new byte[26];
                 try
                 {
                     IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                     EndPoint remote = (EndPoint)(sender);
                     int recv = udp.ReceiveFrom(dataBuffer, ref remote);
                     string strData = Encoding.ASCII.GetString(dataBuffer);
-                    byte[] msg =
-                        Encoding.ASCII.GetBytes(strData + ipLocal +
-                                                ((IPEndPoint) (tcpListener.LocalEndPoint)).Port.ToString());
-                    udp.SendTo(msg, remote);
+                    List<byte> msgList = new List<byte>();
+                    if (recv != 20|| ((IPEndPoint)remote).Address != ipLocal)
+                    {
+                        continue;
+                    }
+                    byte[] message = new byte[26];
+                    Array.Copy(dataBuffer, 0, message, 0, 16);
+                    if (!message.ToString().Contains("Networking17"))
+                    {
+                        continue;
+                    }
+                    Array.Copy(dataBuffer, 0, message,17, 4);
+                    byte[] IP = ipLocal.GetAddressBytes();
+                    Array.Copy(IP, 0, message,21, 4);
+                    byte[] Port = BitConverter.GetBytes((short)((IPEndPoint)tcpListener.LocalEndPoint).Port);
+                    Array.Copy(IP, 0, message, 25, 2);
+                   udp.SendTo(message, remote);
                     Console.WriteLine("get request send offer");
 
                 }
@@ -68,6 +81,8 @@ namespace ChineseWhispers
                 }
             }
         }
+
+
         public string TcpReciveConnection()
         {
             Socket accepted = tcpListener.Accept();
