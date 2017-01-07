@@ -21,7 +21,8 @@ namespace ChineseWhispers
         {
             new Thread(() => tx.UdpListen()).Start();
             new Thread(() => rx.sendOffer()).Start();
-            tx.SendRequests();
+            new Thread(() => tx.SendRequests()).Start();
+            
 
         }
     }

@@ -48,7 +48,7 @@ namespace ChineseWhispers
         {
             while (true)
             {
-                byte[] dataBuffer = new byte[26];
+                byte[] dataBuffer = new byte[20];
                 try
                 {
                     IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
@@ -56,22 +56,24 @@ namespace ChineseWhispers
                     int recv = udp.ReceiveFrom(dataBuffer, ref remote);
                     string strData = Encoding.ASCII.GetString(dataBuffer);
                     List<byte> msgList = new List<byte>();
-                    if (recv != 20|| ((IPEndPoint)remote).Address != ipLocal)
-                    {
-                        continue;
-                    }
+                    //if (recv != 20 || ((IPEndPoint)remote).Address != ipLocal)
+                    //{
+                    //    continue;
+                    //}
                     byte[] message = new byte[26];
                     Array.Copy(dataBuffer, 0, message, 0, 16);
-                    if (!message.ToString().Contains("Networking17"))
+                    if (!Encoding.ASCII.GetString(message).Contains("Networking17"))
                     {
                         continue;
                     }
-                    Array.Copy(dataBuffer, 0, message,17, 4);
+                    Array.Copy(dataBuffer, 16, message,16, 4);
                     byte[] IP = ipLocal.GetAddressBytes();
-                    Array.Copy(IP, 0, message,21, 4);
-                    byte[] Port = BitConverter.GetBytes((short)((IPEndPoint)tcpListener.LocalEndPoint).Port);
-                    Array.Copy(IP, 0, message, 25, 2);
-                   udp.SendTo(message, remote);
+                    Array.Copy(IP, 0, message,20, 4);
+                    Console.WriteLine(((IPEndPoint)tcpListener.LocalEndPoint).Port);
+                    Console.WriteLine(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
+                    byte[] Port = BitConverter.GetBytes(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
+                    Array.Copy(Port, 0, message, 24, 2);
+                    udp.SendTo(message, remote);
                     Console.WriteLine("get request send offer");
 
                 }
