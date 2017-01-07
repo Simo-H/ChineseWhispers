@@ -45,6 +45,25 @@ namespace ChineseWhispers
             tcpListener.Listen(1);
             //udp.Listen(1);
         }
+
+        public void startTCP()
+        {
+            for(int i = 6001; i < 7000; i++)
+                    {
+                try
+                {
+                    tcpListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    tcpListener.Bind(new IPEndPoint(ipLocal, i));
+                    
+
+                    break;
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
         public void sendOffer()
         {
             while (true)
@@ -94,6 +113,7 @@ namespace ChineseWhispers
         {
             while (true)
             {
+                startTCP();
                 Socket accepted;
                 try
                 {
@@ -118,7 +138,7 @@ namespace ChineseWhispers
                 string strData = Encoding.ASCII.GetString(formatted);
                 ///////remember to add change randomly
                 Random rnd = new Random();
-                int place = rnd.Next(1, strData.Length - 1);
+                int place = rnd.Next(0, strData.Length - 1);
                 int letterrandom = rnd.Next(97, 122); 
                 char insertRandomChar = (char)letterrandom;
                 //var aStringBuilder = new StringBuilder(strData);
