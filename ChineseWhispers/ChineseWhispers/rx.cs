@@ -92,8 +92,6 @@ namespace ChineseWhispers
                         Array.Copy(dataBuffer, 16, message, 16, 4);
                         byte[] IP = ipLocal.GetAddressBytes();
                         Array.Copy(IP, 0, message, 20, 4);
-                        Console.WriteLine(((IPEndPoint)tcpListener.LocalEndPoint).Port);
-                        Console.WriteLine(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
                         byte[] Port = BitConverter.GetBytes(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
                         Array.Copy(Port, 0, message, 24, 2);
                         udp.SendTo(message, remote);
@@ -113,21 +111,12 @@ namespace ChineseWhispers
         {
             while (true)
             {
-                startTCP();
+                //startTCP();
                 Socket accepted;
                 try
                 {
                     accepted = tcpListener.Accept();
                     rxon = true;
-
-                }
-                catch (Exception)
-                {
-                    tcpListener.Disconnect(true);
-                    rxon = false;
-                    continue;
-                }
-              
                 Buffer = new byte[accepted.SendBufferSize];
                 int bytesRead = accepted.Receive(Buffer);
                 byte[] formatted = new byte[bytesRead];
@@ -158,6 +147,16 @@ namespace ChineseWhispers
                 accepted.Shutdown(SocketShutdown.Both);
                 accepted.Disconnect(true);
                 rxon = false;
+
+
+                }
+                catch (Exception)
+                {
+                    //accepted.Disconnect(true);
+                    rxon = false;
+                    continue;
+                }
+              
                 // message=strData;
             }
         }
