@@ -87,27 +87,40 @@ namespace ChineseWhispers
 
         public string TcpReciveConnection()
         {
-            Socket accepted = tcpListener.Accept();
-            udp.Close();
-            on = true;
-            Buffer = new byte[accepted.SendBufferSize];
-            int bytesRead = accepted.Receive(Buffer);
-            byte[] formatted = new byte[bytesRead];
-            for (int i = 0; i < bytesRead; i++)
+            while (true)
             {
-                formatted[i] = Buffer[i];
+                Socket accepted;
+                try
+                {
+                    accepted = tcpListener.Accept();
+
+                }
+                catch (Exception)
+                {
+
+                    continue;
+                }
+                udp.Close();//??//
+                on = true;
+                Buffer = new byte[accepted.SendBufferSize];
+                int bytesRead = accepted.Receive(Buffer);
+                byte[] formatted = new byte[bytesRead];
+                for (int i = 0; i < bytesRead; i++)
+                {
+                    formatted[i] = Buffer[i];
+                }
+                string strData = Encoding.ASCII.GetString(formatted);
+                ///////remember to add change randomly
+                Random rnd = new Random();
+                int place = rnd.Next(1, strData.Length - 1);
+                int letterrandom = rnd.Next(0, 26); // Zero to 25
+                char insertRandomChar = (char)letterrandom;
+                var aStringBuilder = new StringBuilder(strData);
+                aStringBuilder.Remove(place, 1);
+                aStringBuilder.Insert(place, insertRandomChar);
+                strData = aStringBuilder.ToString();
+                return strData;
             }
-            string strData = Encoding.ASCII.GetString(formatted);
-            ///////remember to add change randomly
-            Random rnd = new Random();
-            int place = rnd.Next(1, strData.Length-1);
-            int letterrandom = rnd.Next(0, 26); // Zero to 25
-            char insertRandomChar = (char)letterrandom;
-            var aStringBuilder = new StringBuilder(strData);
-            aStringBuilder.Remove(place, 1);
-            aStringBuilder.Insert(place, insertRandomChar);
-            strData = aStringBuilder.ToString();
-            return strData;
         }
 
         public static IPAddress GetLocalIPAddress()
