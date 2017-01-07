@@ -13,13 +13,14 @@ namespace ChineseWhispers
     class rx
     {
        static byte[] Buffer { get; set; }
-        bool on;
+        public static bool rxon;
         Socket tcpListener;
         Socket udp;
         IPAddress ipLocal;
+        public static string message;
         public rx()
         {
-            on = false;
+            rxon = false;
 
             udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
@@ -46,7 +47,7 @@ namespace ChineseWhispers
         }
         public void sendOffer()
         {
-            while (!on)
+            while (!rxon)
             {
                 byte[] dataBuffer = new byte[20];
                 try
@@ -85,7 +86,7 @@ namespace ChineseWhispers
         }
 
 
-        public string TcpReciveConnection()
+        public void TcpReciveConnection()
         {
             while (true)
             {
@@ -100,8 +101,8 @@ namespace ChineseWhispers
 
                     continue;
                 }
-                //udp.Close();//??//
-                on = true;
+              
+                rxon = true;
                 Buffer = new byte[accepted.SendBufferSize];
                 int bytesRead = accepted.Receive(Buffer);
                 byte[] formatted = new byte[bytesRead];
@@ -113,13 +114,21 @@ namespace ChineseWhispers
                 ///////remember to add change randomly
                 Random rnd = new Random();
                 int place = rnd.Next(1, strData.Length - 1);
-                int letterrandom = rnd.Next(0, 26); // Zero to 25
+                int letterrandom = rnd.Next(97, 122); 
                 char insertRandomChar = (char)letterrandom;
-                var aStringBuilder = new StringBuilder(strData);
-                aStringBuilder.Remove(place, 1);
-                aStringBuilder.Insert(place, insertRandomChar);
-                strData = aStringBuilder.ToString();
-                return strData;
+                //var aStringBuilder = new StringBuilder(strData);
+                strData= strData.Remove(place, 1);
+                strData= strData.Insert(place, insertRandomChar.ToString());
+                //  strData = aStringBuilder.ToString();
+                if (true)
+                {
+
+                }
+                else
+                {
+                    Console.WriteLine(strData);
+                }
+               // message=strData;
             }
         }
 
