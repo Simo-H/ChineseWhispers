@@ -102,7 +102,6 @@ namespace ChineseWhispers
                     continue;
                 }
               
-                rxon = true;
                 Buffer = new byte[accepted.SendBufferSize];
                 int bytesRead = accepted.Receive(Buffer);
                 byte[] formatted = new byte[bytesRead];
@@ -120,15 +119,17 @@ namespace ChineseWhispers
                 strData= strData.Remove(place, 1);
                 strData= strData.Insert(place, insertRandomChar.ToString());
                 //  strData = aStringBuilder.ToString();
-                if (true)
+                if (tx.txon)
                 {
-
+                    message = strData;
+                    rxon = true;
                 }
                 else
                 {
+                    rxon = true;
                     Console.WriteLine(strData);
                 }
-               // message=strData;
+                // message=strData;
             }
         }
 
