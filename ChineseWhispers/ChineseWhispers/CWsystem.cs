@@ -11,6 +11,7 @@ namespace ChineseWhispers
     {
         rx rx;
         tx tx;
+        public static bool txon;
         public CWsystem()
         {
             rx = new rx();
@@ -20,9 +21,9 @@ namespace ChineseWhispers
         public void run()
         {
             new Thread(() => tx.UdpListen()).Start();
-            new Thread(() => rx.sendOffer()).Start();
+            //new Thread(() => rx.sendOffer()).Start();
             new Thread(() => tx.SendRequests()).Start();
-            new Thread(() => rx.TcpReciveConnection()).Start();
+            //new Thread(() => rx.TcpReciveConnection()).Start();
 
         }
     }

@@ -14,14 +14,14 @@ namespace ChineseWhispers
 {
     class tx
     {
-        public bool on;
+        public static bool txon;
         //TcpClient tcp;
         private Socket tcpClient;
-        Socket udp;
+        private Socket udp;
 
         public tx()
         {
-            on = false;
+            txon = false;
             tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             IPEndPoint endpoint = new IPEndPoint(rx.GetLocalIPAddress(), 0);
@@ -31,7 +31,7 @@ namespace ChineseWhispers
         }
         public void SendRequests()
         {
-            while (!on)
+            while (!txon)
             {
                 byte[] msg = new byte[20];
                 byte[] networking17 = Encoding.ASCII.GetBytes("Networking17COOL");// + new Random().Next());
@@ -41,6 +41,7 @@ namespace ChineseWhispers
                 udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
                 Console.WriteLine("Sending Broadcast...");
                 Thread.Sleep(5000);
+                
         }
 
     }
@@ -85,13 +86,15 @@ namespace ChineseWhispers
             try
             {
                 tcpClient.Connect(remoteEndPoint);
-                @on = true;
+                txon = true;
+                
                 byte[] msg = Encoding.ASCII.GetBytes("ILoveStav");
                 tcpClient.Send(msg);
+                Console.WriteLine("Message sent");
             }
             catch (Exception e)
             {
-                @on = false;
+                txon = false;
                 Console.WriteLine(e);
                 
             }

@@ -46,7 +46,7 @@ namespace ChineseWhispers
         }
         public void sendOffer()
         {
-            while (true)
+            while (!on)
             {
                 byte[] dataBuffer = new byte[20];
                 try
@@ -100,7 +100,7 @@ namespace ChineseWhispers
 
                     continue;
                 }
-                udp.Close();//??//
+                //udp.Close();//??//
                 on = true;
                 Buffer = new byte[accepted.SendBufferSize];
                 int bytesRead = accepted.Receive(Buffer);
