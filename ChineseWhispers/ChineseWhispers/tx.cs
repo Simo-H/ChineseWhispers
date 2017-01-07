@@ -31,20 +31,22 @@ namespace ChineseWhispers
         }
         public void SendRequests()
         {
-            while (!txon && !rx.rxon)
+            while (true)
             {
-                byte[] msg = new byte[20];
-                byte[] networking17 = Encoding.ASCII.GetBytes("Networking17COOL");// + new Random().Next());
-                byte[] randomInt = BitConverter.GetBytes(new Random().Next());
-                Array.Copy(networking17, msg, networking17.Length);
-                Array.Copy(randomInt, 0, msg, networking17.Length, randomInt.Length);
-                udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
-                Console.WriteLine("Sending Broadcast...");
-                Thread.Sleep(1000);
-                
-        }
+                while (!txon && !rx.rxon)
+                {
+                    byte[] msg = new byte[20];
+                    byte[] networking17 = Encoding.ASCII.GetBytes("Networking17COOL");// + new Random().Next());
+                    byte[] randomInt = BitConverter.GetBytes(new Random().Next());
+                    Array.Copy(networking17, msg, networking17.Length);
+                    Array.Copy(randomInt, 0, msg, networking17.Length, randomInt.Length);
+                    udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
+                    Console.WriteLine("Sending Broadcast...");
+                    Thread.Sleep(1000);
+                }
+            }
 
-    }
+        }
 
         public void UdpListen()
         {
@@ -86,13 +88,13 @@ namespace ChineseWhispers
             try
             {
                 tcpClient.Connect(remoteEndPoint);
-                byte[] msg;
                 txon = true;
+                byte[] msg;
                 if (rx.rxon)
                 {
                     while (rx.message == null)
                     {
-                        
+
                     }
                     msg = Encoding.ASCII.GetBytes(rx.message);
                     rx.message = null;
@@ -117,14 +119,14 @@ namespace ChineseWhispers
                 }
                 tcpClient.Send(msg);
                 Console.WriteLine("Message sent");
-                tcpClient.Close();
+                tcpClient.Disconnect(true);
                 txon = false;
             }
             catch (Exception e)
             {
                 txon = false;
                 Console.WriteLine(e);
-                
+
             }
         }
 
