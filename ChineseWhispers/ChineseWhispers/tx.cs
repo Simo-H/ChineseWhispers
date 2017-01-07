@@ -90,15 +90,25 @@ namespace ChineseWhispers
                 txon = true;
                 if (rx.rxon)
                 {
+                    while (rx.message == null)
+                    {
+                        
+                    }
                     msg = Encoding.ASCII.GetBytes(rx.message);
+                    rx.message = null;
                 }
                 else
                 {
+                    Console.WriteLine("Please enter a message");
                     string userMessage = Console.ReadLine();
                     if (rx.rxon)
                     {
-                        Console.WriteLine("Please enter a message");
+                        while (rx.message == null)
+                        {
+
+                        }
                         msg = Encoding.ASCII.GetBytes(rx.message);
+                        rx.message = null;
                     }
                     else
                     {
