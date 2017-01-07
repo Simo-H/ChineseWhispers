@@ -94,11 +94,13 @@ namespace ChineseWhispers
                 try
                 {
                     accepted = tcpListener.Accept();
+                    rxon = true;
 
                 }
                 catch (Exception)
                 {
-
+                    tcpListener.Close();
+                    rxon = false;
                     continue;
                 }
               
@@ -122,13 +124,15 @@ namespace ChineseWhispers
                 if (tx.txon)
                 {
                     message = strData;
-                    rxon = true;
+
                 }
                 else
                 {
-                    rxon = true;
                     Console.WriteLine(strData);
+                    
                 }
+                tcpListener.Close();
+                rxon = false;
                 // message=strData;
             }
         }
