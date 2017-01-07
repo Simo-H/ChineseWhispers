@@ -87,6 +87,7 @@ namespace ChineseWhispers
         {
             try
             {
+                tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 tcpClient.Connect(remoteEndPoint);
                 txon = true;
                 byte[] msg;
