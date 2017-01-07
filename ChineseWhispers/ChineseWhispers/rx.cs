@@ -56,10 +56,10 @@ namespace ChineseWhispers
                     int recv = udp.ReceiveFrom(dataBuffer, ref remote);
                     string strData = Encoding.ASCII.GetString(dataBuffer);
                     List<byte> msgList = new List<byte>();
-                    //if (recv != 20 || ((IPEndPoint)remote).Address != ipLocal)
-                    //{
-                    //    continue;
-                    //}
+                    if (recv != 20 || ((IPEndPoint)remote).Address.ToString().Equals(ipLocal.ToString()))
+                    {
+                        continue;
+                    }
                     byte[] message = new byte[26];
                     Array.Copy(dataBuffer, 0, message, 0, 16);
                     if (!Encoding.ASCII.GetString(message).Contains("Networking17"))

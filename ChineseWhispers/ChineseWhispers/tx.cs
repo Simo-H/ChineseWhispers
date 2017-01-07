@@ -14,7 +14,7 @@ namespace ChineseWhispers
 {
     class tx
     {
-        bool on;
+        public bool on;
         //TcpClient tcp;
         private Socket tcpClient;
         Socket udp;
@@ -26,13 +26,13 @@ namespace ChineseWhispers
             udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             IPEndPoint endpoint = new IPEndPoint(rx.GetLocalIPAddress(), 0);
             udp.Bind(endpoint);
+            udp.EnableBroadcast = true;
 
         }
         public void SendRequests()
         {
-            while (true)
+            while (!on)
             {
-                udp.EnableBroadcast = true;
                 byte[] msg = new byte[20];
                 byte[] networking17 = Encoding.ASCII.GetBytes("Networking17COOL");// + new Random().Next());
                 byte[] randomInt = BitConverter.GetBytes(new Random().Next());
@@ -40,7 +40,7 @@ namespace ChineseWhispers
                 Array.Copy(randomInt, 0, msg, networking17.Length, randomInt.Length);
                 udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
                 Console.WriteLine("Sending Broadcast...");
-            Thread.Sleep(5000);
+                Thread.Sleep(5000);
         }
 
     }
@@ -77,13 +77,24 @@ namespace ChineseWhispers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                udp.Close();
             }
         }
 
         private void ConnectTcp(EndPoint remoteEndPoint)
         {
-            tcpClient.Connect(remoteEndPoint);
+            try
+            {
+                tcpClient.Connect(remoteEndPoint);
+                @on = true;
+                byte[] msg = Encoding.ASCII.GetBytes("ILoveStav");
+                tcpClient.Send(msg);
+            }
+            catch (Exception e)
+            {
+                @on = false;
+                Console.WriteLine(e);
+                
+            }
         }
 
         private void readOfferMessage(byte[] dataByte, out string networking17, out int randomInt, out EndPoint remoteEndPoint)
