@@ -47,40 +47,44 @@ namespace ChineseWhispers
         }
         public void sendOffer()
         {
-            while (!rxon)
+            while (true)
             {
-                byte[] dataBuffer = new byte[20];
-                try
-                {
-                    IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-                    EndPoint remote = (EndPoint)(sender);
-                    int recv = udp.ReceiveFrom(dataBuffer, ref remote);
-                    string strData = Encoding.ASCII.GetString(dataBuffer);
-                    List<byte> msgList = new List<byte>();
-                    if (recv != 20 || ((IPEndPoint)remote).Address.ToString().Equals(ipLocal.ToString()))
-                    {
-                        continue;
-                    }
-                    byte[] message = new byte[26];
-                    Array.Copy(dataBuffer, 0, message, 0, 16);
-                    if (!Encoding.ASCII.GetString(message).Contains("Networking17"))
-                    {
-                        continue;
-                    }
-                    Array.Copy(dataBuffer, 16, message,16, 4);
-                    byte[] IP = ipLocal.GetAddressBytes();
-                    Array.Copy(IP, 0, message,20, 4);
-                    Console.WriteLine(((IPEndPoint)tcpListener.LocalEndPoint).Port);
-                    Console.WriteLine(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
-                    byte[] Port = BitConverter.GetBytes(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
-                    Array.Copy(Port, 0, message, 24, 2);
-                    udp.SendTo(message, remote);
-                    Console.WriteLine("get request send offer");
 
-                }
-                catch (Exception e)
+                while (!rxon)
                 {
-                    Console.WriteLine(e);
+                    byte[] dataBuffer = new byte[20];
+                    try
+                    {
+                        IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
+                        EndPoint remote = (EndPoint)(sender);
+                        int recv = udp.ReceiveFrom(dataBuffer, ref remote);
+                        string strData = Encoding.ASCII.GetString(dataBuffer);
+                        List<byte> msgList = new List<byte>();
+                        if (recv != 20 || ((IPEndPoint)remote).Address.ToString().Equals(ipLocal.ToString()))
+                        {
+                            continue;
+                        }
+                        byte[] message = new byte[26];
+                        Array.Copy(dataBuffer, 0, message, 0, 16);
+                        if (!Encoding.ASCII.GetString(message).Contains("Networking17"))
+                        {
+                            continue;
+                        }
+                        Array.Copy(dataBuffer, 16, message, 16, 4);
+                        byte[] IP = ipLocal.GetAddressBytes();
+                        Array.Copy(IP, 0, message, 20, 4);
+                        Console.WriteLine(((IPEndPoint)tcpListener.LocalEndPoint).Port);
+                        Console.WriteLine(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
+                        byte[] Port = BitConverter.GetBytes(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
+                        Array.Copy(Port, 0, message, 24, 2);
+                        udp.SendTo(message, remote);
+                        Console.WriteLine("get request send offer");
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
             }
         }
@@ -99,7 +103,7 @@ namespace ChineseWhispers
                 }
                 catch (Exception)
                 {
-                    tcpListener.Close();
+                    tcpListener.Disconnect(true);
                     rxon = false;
                     continue;
                 }
@@ -131,7 +135,8 @@ namespace ChineseWhispers
                     Console.WriteLine(strData);
                     
                 }
-                tcpListener.Close();
+                accepted.Shutdown(SocketShutdown.Both);
+                accepted.Disconnect(true);
                 rxon = false;
                 // message=strData;
             }
