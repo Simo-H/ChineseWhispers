@@ -31,7 +31,7 @@ namespace ChineseWhispers
         }
         public void SendRequests()
         {
-            while (!txon)
+            while (!txon && !rx.rxon)
             {
                 byte[] msg = new byte[20];
                 byte[] networking17 = Encoding.ASCII.GetBytes("Networking17COOL");// + new Random().Next());
@@ -40,7 +40,7 @@ namespace ChineseWhispers
                 Array.Copy(randomInt, 0, msg, networking17.Length, randomInt.Length);
                 udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
                 Console.WriteLine("Sending Broadcast...");
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
                 
         }
 
@@ -86,11 +86,29 @@ namespace ChineseWhispers
             try
             {
                 tcpClient.Connect(remoteEndPoint);
+                byte[] msg;
                 txon = true;
-                
-                byte[] msg = Encoding.ASCII.GetBytes("ILoveStav");
+                if (rx.rxon)
+                {
+                    msg = Encoding.ASCII.GetBytes(rx.message);
+                }
+                else
+                {
+                    string userMessage = Console.ReadLine();
+                    if (rx.rxon)
+                    {
+                        Console.WriteLine("Please enter a message");
+                        msg = Encoding.ASCII.GetBytes(rx.message);
+                    }
+                    else
+                    {
+                        msg = Encoding.ASCII.GetBytes(userMessage);
+                    }
+                }
                 tcpClient.Send(msg);
                 Console.WriteLine("Message sent");
+                tcpClient.Close();
+                txon = false;
             }
             catch (Exception e)
             {
