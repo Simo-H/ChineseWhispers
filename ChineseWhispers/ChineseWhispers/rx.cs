@@ -102,7 +102,7 @@ namespace ChineseWhispers
                         udp.SendTo(message, remote);
                         
                         CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(message) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
-                        
+                        Console.WriteLine("sent offer");
 
                     }
                     catch (Exception e)
@@ -146,6 +146,8 @@ namespace ChineseWhispers
                 strData= strData.Insert(place, insertRandomChar.ToString());
                     //  strData = aStringBuilder.ToString();
                     CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received message: "+ Encoding.ASCII.GetString(formatted) + " From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port+ " Changed it to: "+strData);
+                    Console.WriteLine("rx change messege" + strData);
+
                     if (tx.txon)
                 {
                     message = strData;
