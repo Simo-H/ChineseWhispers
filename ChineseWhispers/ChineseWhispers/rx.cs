@@ -123,40 +123,43 @@ namespace ChineseWhispers
                 Socket accepted;
                 try
                 {
-                    
+
                     accepted = tcpListener.Accept();
-                    connectedIp = ((IPEndPoint) accepted.RemoteEndPoint).Address;
+                    connectedIp = ((IPEndPoint)accepted.RemoteEndPoint).Address;
                     CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " accepted TCP Connection From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port);
                     rxon = true;
-                Buffer = new byte[accepted.SendBufferSize];
-                int bytesRead = accepted.Receive(Buffer);
-                byte[] formatted = new byte[bytesRead];
-                for (int i = 0; i < bytesRead; i++)
-                {
-                    formatted[i] = Buffer[i];
-                }
-                string strData = Encoding.ASCII.GetString(formatted);
-                ///////remember to add change randomly
-                Random rnd = new Random();
-                int place = rnd.Next(0, strData.Length - 1);
-                int letterrandom = rnd.Next(97, 122); 
-                char insertRandomChar = (char)letterrandom;
-                //var aStringBuilder = new StringBuilder(strData);
-                strData= strData.Remove(place, 1);
-                strData= strData.Insert(place, insertRandomChar.ToString());
-                    //  strData = aStringBuilder.ToString();
-                    CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received message: "+ Encoding.ASCII.GetString(formatted) + " From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port+ " Changed it to: "+strData);
-                    Console.WriteLine("rx change messege" + strData);
+                    while (true)
+                    {
+                        Buffer = new byte[accepted.SendBufferSize];
+                        int bytesRead = accepted.Receive(Buffer);
+                        byte[] formatted = new byte[bytesRead];
+                        for (int i = 0; i < bytesRead; i++)
+                        {
+                            formatted[i] = Buffer[i];
+                        }
+                        string strData = Encoding.ASCII.GetString(formatted);
+                        ///////remember to add change randomly
+                        Random rnd = new Random();
+                        int place = rnd.Next(0, strData.Length - 1);
+                        int letterrandom = rnd.Next(97, 122);
+                        char insertRandomChar = (char)letterrandom;
+                        //var aStringBuilder = new StringBuilder(strData);
+                        strData = strData.Remove(place, 1);
+                        strData = strData.Insert(place, insertRandomChar.ToString());
+                        //  strData = aStringBuilder.ToString();
+                        CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received message: " + Encoding.ASCII.GetString(formatted) + " From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port + " Changed it to: " + strData);
+                        Console.WriteLine("rx change messege" + strData);
 
-                    if (tx.txon)
-                {
-                    message = strData;
+                        if (tx.txon)
+                        {
+                            message = strData;
 
-                }
-                else
-                {
-                    Console.WriteLine(strData);
-                }
+                        }
+                        else
+                        {
+                            Console.WriteLine(strData);
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
