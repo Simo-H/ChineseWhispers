@@ -142,13 +142,7 @@ namespace ChineseWhispers
                 else
                 {
                     Console.WriteLine(strData);
-                    
                 }
-                accepted.Shutdown(SocketShutdown.Both);
-                accepted.Disconnect(true);
-                rxon = false;
-
-
                 }
                 catch (Exception)
                 {

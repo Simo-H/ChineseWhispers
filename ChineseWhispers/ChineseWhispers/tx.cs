@@ -51,7 +51,7 @@ namespace ChineseWhispers
         public void UdpListen()
         {
             try
-            {
+            { 
                 //udp.Listen(1);
                 while (true)
                 {
@@ -120,8 +120,6 @@ namespace ChineseWhispers
                 }
                 tcpClient.Send(msg);
                 Console.WriteLine("Message sent");
-                tcpClient.Disconnect(true);
-                txon = false;
             }
             catch (Exception e)
             {
