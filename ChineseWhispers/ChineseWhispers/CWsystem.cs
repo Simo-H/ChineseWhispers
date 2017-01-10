@@ -11,10 +11,13 @@ namespace ChineseWhispers
     {
         rx rx;
         tx tx;
+        public static LogWriter writer;
         public CWsystem()
         {
             rx = new rx();
             tx = new tx();
+            writer = LogWriter.Instance;
+            
         }
 
         public void run()
