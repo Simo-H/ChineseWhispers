@@ -18,6 +18,8 @@ namespace ChineseWhispers
         Socket udp;
         IPAddress ipLocal;
         public static string message;
+        public static IPAddress connectedIp;
+        
         public rx()
         {
             rxon = false;
@@ -115,7 +117,9 @@ namespace ChineseWhispers
                 Socket accepted;
                 try
                 {
+                    
                     accepted = tcpListener.Accept();
+                    connectedIp = ((IPEndPoint) accepted.RemoteEndPoint).Address;
                     rxon = true;
                 Buffer = new byte[accepted.SendBufferSize];
                 int bytesRead = accepted.Receive(Buffer);
