@@ -58,9 +58,10 @@ namespace ChineseWhispers
         {
             try
             {
-                //udp.Listen(1);
-                while (rx.rxon)
+                
+                while (!rx.rxon)
                 {
+
                     byte[] dataByte = new byte[26];
                     IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                     EndPoint remote = (EndPoint)(sender);
@@ -109,35 +110,37 @@ namespace ChineseWhispers
                 CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP:" + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 txon = true;
                 byte[] msg;
-                if (rx.rxon)
+                while (true)
                 {
-                    while (rx.message == null)
+                    if (rx.rxon)
                     {
+                        while (rx.message == null)
+                        {
 
+                        }
+                        msg = Encoding.ASCII.GetBytes(rx.message);
+                        CWsystem.writer.WriteToLog("Message delivered from another machine: " + msg);
+                        rx.message = null;
                     }
-                    msg = Encoding.ASCII.GetBytes(rx.message);
-                    CWsystem.writer.WriteToLog("Message delivered from another machine: " + msg);
-                    rx.message = null;
+                    else
+                    {
+                        Thread t = new Thread(readThread);
+                        t.Start();
+                        while (rx.message == null)
+                        {
+
+                        }
+                        if (t.IsAlive)
+                        {
+                            t.Abort();
+                        }
+                        CWsystem.writer.WriteToLog("Message: " + rx.message);
+                        msg = Encoding.ASCII.GetBytes(rx.message);
+                    }
+                    tcpClient.Send(msg);
+                    Console.WriteLine("Message sent");
                 }
-                else
-                {
 
-                    Thread t = new Thread(readThread);
-                    t.Start();
-                    while (rx.message == null)
-                    {
-
-                    }
-                    if (t.IsAlive)
-                    {
-                        t.Abort();
-                    }
-                    CWsystem.writer.WriteToLog("User entered message: " + rx.message);
-                    msg = Encoding.ASCII.GetBytes(rx.message);
-                }
-
-                tcpClient.Send(msg);
-                Console.WriteLine("Message sent");
             }
             catch (Exception e)
             {
@@ -146,7 +149,7 @@ namespace ChineseWhispers
                 CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Failed to connect via TCP to IP:" + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 Console.WriteLine(e);
                 CWsystem.writer.WriteToLog(e.Message);
-
+                UdpListen();
             }
         }
 
