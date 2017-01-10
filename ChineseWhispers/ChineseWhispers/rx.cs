@@ -93,7 +93,7 @@ namespace ChineseWhispers
                         }
 
                         
-                        CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received UDP broadcast message: " + message + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
+                        CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received UDP broadcast message: " + Encoding.ASCII.GetString(message) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
                         Array.Copy(dataBuffer, 16, message, 16, 4);
                         byte[] IP = ipLocal.GetAddressBytes();
                         Array.Copy(IP, 0, message, 20, 4);
@@ -101,7 +101,7 @@ namespace ChineseWhispers
                         Array.Copy(Port, 0, message, 24, 2);
                         udp.SendTo(message, remote);
                         
-                        CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + message + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
+                        CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(message) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
                         
 
                     }
