@@ -44,7 +44,7 @@ namespace ChineseWhispers
                         }
                     }                   
                        
-            //tcpListener.Listen(1);
+            tcpListener.Listen(1);
             //udp.Listen(1);
         }
 
@@ -158,9 +158,10 @@ namespace ChineseWhispers
                     Console.WriteLine(strData);
                 }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     //accepted.Disconnect(true);
+                    Console.Write(e);
                     rxon = false;
                     continue;
                 }
