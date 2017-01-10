@@ -22,11 +22,18 @@ namespace ChineseWhispers
 
         public void run()
         {
-         //   new Thread(() => tx.UdpListen()).Start();
+            Thread t1 = new Thread(tx.UdpListen);
+            t1.Start();
             new Thread(() => rx.sendOffer()).Start();
-          //  new Thread(() => tx.SendRequests()).Start();
+            Thread t2 =new Thread(tx.SendRequests);
+            t2.Start();
             new Thread(() => rx.TcpReciveConnection()).Start();
-
+            while (!rx.rxon)
+            {
+                
+            }
+            t1.Abort();
+            t2.Abort();
         }
     }
 }

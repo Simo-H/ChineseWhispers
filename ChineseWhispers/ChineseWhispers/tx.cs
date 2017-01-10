@@ -23,12 +23,12 @@ namespace ChineseWhispers
         {
             try
             {
-            txon = false;
-            tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            IPEndPoint endpoint = new IPEndPoint(rx.GetLocalIPAddress(), 0);
-            udp.Bind(endpoint);
-            udp.EnableBroadcast = true;
+                txon = false;
+                tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                IPEndPoint endpoint = new IPEndPoint(rx.GetLocalIPAddress(), 0);
+                udp.Bind(endpoint);
+                udp.EnableBroadcast = true;
 
             }
             catch (Exception e)
@@ -40,30 +40,26 @@ namespace ChineseWhispers
         }
         public void SendRequests()
         {
-            while (true)
+            while (!txon && !rx.rxon)
             {
-                while (!txon && !rx.rxon)
-                {
-                    byte[] msg = new byte[20];
-                    byte[] networking17 = Encoding.ASCII.GetBytes("Networking17COOL");// + new Random().Next());
-                    byte[] randomInt = BitConverter.GetBytes(new Random().Next());
-                    Array.Copy(networking17, msg, networking17.Length);
-                    Array.Copy(randomInt, 0, msg, networking17.Length, randomInt.Length);
-                    udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
-                    Console.WriteLine("send reqest");
-                    CWsystem.writer.WriteToLog("IP:"+rx.GetLocalIPAddress().ToString()+" Port: "+((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Sent UDP Broadcast to port 6000...");
-                    Thread.Sleep(1000);
-                }
+                byte[] msg = new byte[20];
+                byte[] networking17 = Encoding.ASCII.GetBytes("Networking17COOL");// + new Random().Next());
+                byte[] randomInt = BitConverter.GetBytes(new Random().Next());
+                Array.Copy(networking17, msg, networking17.Length);
+                Array.Copy(randomInt, 0, msg, networking17.Length, randomInt.Length);
+                udp.SendTo(msg, new IPEndPoint(IPAddress.Broadcast, 6000));
+                Console.WriteLine("send reqest");
+                CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Sent UDP Broadcast to port 6000...");
+                Thread.Sleep(1000);
             }
-
         }
 
         public void UdpListen()
         {
             try
-            { 
+            {
                 //udp.Listen(1);
-                while (true)
+                while (rx.rxon)
                 {
                     byte[] dataByte = new byte[26];
                     IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
@@ -120,38 +116,33 @@ namespace ChineseWhispers
 
                     }
                     msg = Encoding.ASCII.GetBytes(rx.message);
-                   
-
                     CWsystem.writer.WriteToLog("Message delivered from another machine: " + msg);
                     rx.message = null;
                 }
                 else
                 {
-                    Console.WriteLine("Please enter a message");
-                    string userMessage = Console.ReadLine();
-                    if (rx.rxon)
-                    {
-                        while (rx.message == null)
-                        {
 
-                        }
-                        msg = Encoding.ASCII.GetBytes(rx.message);
-                        CWsystem.writer.WriteToLog("Message delivered from another machine: " + msg);
-                        rx.message = null;
-                    }
-                    else
+                    Thread t = new Thread(readThread);
+                    t.Start();
+                    while (rx.message == null)
                     {
-                        CWsystem.writer.WriteToLog("User entered message: "+userMessage);
-                        msg = Encoding.ASCII.GetBytes(userMessage);
+
                     }
+                    if (t.IsAlive)
+                    {
+                        t.Abort();
+                    }
+                    CWsystem.writer.WriteToLog("User entered message: " + rx.message);
+                    msg = Encoding.ASCII.GetBytes(rx.message);
                 }
+
                 tcpClient.Send(msg);
                 Console.WriteLine("Message sent");
             }
             catch (Exception e)
             {
                 txon = false;
-                
+
                 CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Failed to connect via TCP to IP:" + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 Console.WriteLine(e);
                 CWsystem.writer.WriteToLog(e.Message);
@@ -174,6 +165,12 @@ namespace ChineseWhispers
             IPAddress ip = new IPAddress(ipByte);
             short port = BitConverter.ToInt16(portShort, 0);
             remoteEndPoint = new IPEndPoint(ip, port);
+        }
+
+        public void readThread()
+        {
+            Console.WriteLine("Please enter a message");
+            rx.message = Console.ReadLine();
         }
     }
 }
