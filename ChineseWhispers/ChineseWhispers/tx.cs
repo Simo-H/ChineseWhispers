@@ -88,7 +88,7 @@ namespace ChineseWhispers
             try
             {
                 tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                if (rx.connectedIp.ToString().Equals(((IPEndPoint)remoteEndPoint).Address.ToString()))
+                if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)remoteEndPoint).Address.ToString()))
                 {
                     return;
                 }
