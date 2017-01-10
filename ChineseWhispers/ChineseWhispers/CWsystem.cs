@@ -32,7 +32,6 @@ namespace ChineseWhispers
             {
                 
             }
-            t1.Abort();
             t2.Abort();
         }
     }
