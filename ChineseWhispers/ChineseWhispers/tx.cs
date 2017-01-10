@@ -121,6 +121,8 @@ namespace ChineseWhispers
                         msg = Encoding.ASCII.GetBytes(rx.message);
                         CWsystem.writer.WriteToLog("Message delivered from another machine: " + msg);
                         rx.message = null;
+                        tcpClient.Send(msg);
+                        Console.WriteLine("Message sent");
                     }
                     else
                     {
@@ -136,9 +138,10 @@ namespace ChineseWhispers
                         }
                         CWsystem.writer.WriteToLog("Message: " + rx.message);
                         msg = Encoding.ASCII.GetBytes(rx.message);
+                        rx.message = null;
+                        tcpClient.Send(msg);
+                        Console.WriteLine("Message sent");
                     }
-                    tcpClient.Send(msg);
-                    Console.WriteLine("Message sent");
                 }
 
             }
