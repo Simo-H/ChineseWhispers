@@ -162,7 +162,7 @@ namespace ChineseWhispers
                         }
                         else
                         {
-                            //SConsole.WriteLine(strData);
+                            Console.WriteLine(strData);
                         }
                     }
                 }
