@@ -21,8 +21,8 @@ namespace ChineseWhispers
         private static Queue<Log> logQueue;
         private static string logDir = Directory.GetCurrentDirectory();
         private static string logFile = "Log.txt";
-        private static int maxLogAge = int.Parse("10");
-        private static int queueSize = int.Parse("10");
+        private static int maxLogAge = int.Parse("1");
+        private static int queueSize = int.Parse("1");
         private static DateTime LastFlushed = DateTime.Now;
 
         /// <summary>
