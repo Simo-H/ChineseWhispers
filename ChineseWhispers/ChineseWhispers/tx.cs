@@ -154,7 +154,7 @@ namespace ChineseWhispers
             }
             catch (Exception e)
             {
-                m.ReleaseMutex();
+              //  m.ReleaseMutex();
 
                 txon = false;
 

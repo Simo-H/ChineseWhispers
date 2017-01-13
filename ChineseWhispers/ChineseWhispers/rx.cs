@@ -174,7 +174,7 @@ namespace ChineseWhispers
                 catch (Exception e)
                 {
                     //accepted.Disconnect(true);
-                    tx.m.ReleaseMutex();
+                    //tx.m.ReleaseMutex();
                     Console.Write(e);
                     rxon = false;
                     continue;
