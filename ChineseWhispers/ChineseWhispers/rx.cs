@@ -103,8 +103,8 @@ namespace ChineseWhispers
                         Array.Copy(Port, 0, message, 24, 2);
                         udp.SendTo(message, remote);
                         
-                        CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(networking17) + BitConverter.ToInt32(randomInt, 0) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
-                        Console.WriteLine("sent offer");
+                        CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(message) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
+                        Console.WriteLine("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(message) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
 
                     }
                     catch (Exception e)
@@ -129,6 +129,8 @@ namespace ChineseWhispers
                     accepted = tcpListener.Accept();
                     connectedIp = ((IPEndPoint)accepted.RemoteEndPoint).Address;
                     CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " accepted TCP Connection From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port);
+                    Console.WriteLine ("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " accepted TCP Connection From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port);
+
                     rxon = true;
                     while (true)
                     {
@@ -150,7 +152,7 @@ namespace ChineseWhispers
                         strData = strData.Insert(place, insertRandomChar.ToString());
                         //  strData = aStringBuilder.ToString();
                         CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received message: " + Encoding.ASCII.GetString(formatted) + " From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port + " Changed it to: " + strData);
-                        Console.WriteLine("rx change messege" + strData);
+                        Console.WriteLine("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received message: " + Encoding.ASCII.GetString(formatted) + " From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port + " Changed it to: " + strData);
 
                         if (tx.txon)
                         {
@@ -159,7 +161,7 @@ namespace ChineseWhispers
                         }
                         else
                         {
-                            Console.WriteLine(strData);
+                            //SConsole.WriteLine(strData);
                         }
                     }
                 }
