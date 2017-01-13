@@ -128,11 +128,11 @@ namespace ChineseWhispers
                 {
                     //tx.m.WaitOne();
                     accepted = tcpListener.Accept();
-                    if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)accepted.RemoteEndPoint).Address.ToString()))
-                    {
-                        return;
-                    }
-                    //connectedIp = ((IPEndPoint)accepted.RemoteEndPoint).Address;
+                    //if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)accepted.RemoteEndPoint).Address.ToString()))
+                    //{
+                    //    return;
+                    //}
+                    connectedIp = ((IPEndPoint)accepted.RemoteEndPoint).Address;
                     //tx.m.ReleaseMutex();
                     CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " accepted TCP Connection From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port);
                     Console.WriteLine ("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " accepted TCP Connection From IP: " + connectedIp + " Port " + ((IPEndPoint)accepted.RemoteEndPoint).Port);
