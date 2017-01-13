@@ -109,7 +109,7 @@ namespace ChineseWhispers
                     return;
                 }
                 tcpClient.Connect(remoteEndPoint);
-                //rx.connectedIp = ((IPEndPoint)(remoteEndPoint)).Address;
+                rx.connectedIp = ((IPEndPoint)(remoteEndPoint)).Address;
                 Console.WriteLine("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 CWsystem.writer.WriteToLog("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 txon = true;
