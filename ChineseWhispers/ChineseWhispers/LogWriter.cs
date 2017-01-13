@@ -98,7 +98,7 @@ namespace ChineseWhispers
                     using (StreamWriter log = new StreamWriter(fs))
                     {
                         log.WriteLine(string.Format("{0}\t{1}", entry.LogTime, entry.Message));
-                      //  Console.WriteLine(string.Format("{0}\t{1}", entry.LogTime, entry.Message));
+                      //Console.WriteLine(string.Format("{0}\t{1}", entry.LogTime, entry.Message));
                     }
                 }
             }
