@@ -14,6 +14,7 @@ namespace ChineseWhispers
 {
     class tx
     {
+        public static Mutex m;
         public static bool txon;
         //TcpClient tcp;
         private Socket tcpClient;
@@ -23,6 +24,7 @@ namespace ChineseWhispers
         {
             try
             {
+                m= new Mutex();
                 txon = false;
                 tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -100,15 +102,19 @@ namespace ChineseWhispers
         {
             try
             {
+                m.WaitOne();
                 tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)remoteEndPoint).Address.ToString()))
                 {
                     return;
                 }
                 tcpClient.Connect(remoteEndPoint);
+                rx.connectedIp = ((IPEndPoint)(remoteEndPoint)).Address;
                 Console.WriteLine("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 CWsystem.writer.WriteToLog("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 txon = true;
+                m.ReleaseMutex();
+               
                 byte[] msg;
                 while (true)
                 {
@@ -148,6 +154,8 @@ namespace ChineseWhispers
             }
             catch (Exception e)
             {
+                m.ReleaseMutex();
+
                 txon = false;
 
                 CWsystem.writer.WriteToLog("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Failed to connect via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
