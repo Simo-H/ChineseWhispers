@@ -71,6 +71,7 @@ namespace ChineseWhispers
                     EndPoint remote = (EndPoint)(sender);
                     int recv = udp.ReceiveFrom(dataByte, ref remote);
                     m.WaitOne();
+                    m2.WaitOne();
                     
                     if (recv != 26)
                     {
@@ -115,9 +116,11 @@ namespace ChineseWhispers
                     return;
                 }
                 tcpClient.Connect(remoteEndPoint);
+                CWsystem.t2.Abort();
                 rx.connectedIp = ((IPEndPoint)(remoteEndPoint)).Address;
                 txon = true;
                 m.ReleaseMutex();
+                m2.ReleaseMutex();
                 Console.WriteLine("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 CWsystem.writer.WriteToLog("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                
