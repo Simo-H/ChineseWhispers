@@ -15,6 +15,7 @@ namespace ChineseWhispers
     class tx
     {
         public static Mutex m;
+        public static Mutex m2;
         public static bool txon;
         //TcpClient tcp;
         private Socket tcpClient;
@@ -70,6 +71,10 @@ namespace ChineseWhispers
                     EndPoint remote = (EndPoint)(sender);
                     int recv = udp.ReceiveFrom(dataByte, ref remote);
                     m.WaitOne();
+                    if (rx.rxon)
+                    {
+                        continue;
+                    }
                     if (recv != 26 && !rx.rxon)
                     {
                         continue;
@@ -129,8 +134,8 @@ namespace ChineseWhispers
 
                         }
                         msg = Encoding.ASCII.GetBytes(rx.message);
-                        CWsystem.writer.WriteToLog("Message delivered from another machine: " + msg);
-                        Console.WriteLine("Message delivered from another machine: " + msg);
+                        CWsystem.writer.WriteToLog("Message delivered from another machine: " + rx.message);
+                        Console.WriteLine("Message delivered from another machine: " + rx.message);
                         rx.message = null;
                         tcpClient.Send(msg);
                        
