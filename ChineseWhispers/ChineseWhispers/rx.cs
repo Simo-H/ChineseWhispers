@@ -79,7 +79,6 @@ namespace ChineseWhispers
                         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
-                        tx.m.WaitOne();
                         
                         string strData = Encoding.ASCII.GetString(dataBuffer);
                         List<byte> msgList = new List<byte>();
