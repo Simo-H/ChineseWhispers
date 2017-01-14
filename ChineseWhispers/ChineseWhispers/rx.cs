@@ -80,7 +80,7 @@ namespace ChineseWhispers
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
                         tx.m.WaitOne();
-                        if (rxon)
+                        if (!rxon)
                         {
                             continue;
                             
