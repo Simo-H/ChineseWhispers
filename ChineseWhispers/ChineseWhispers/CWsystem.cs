@@ -26,7 +26,8 @@ namespace ChineseWhispers
         {
             Thread t1 = new Thread(tx.UdpListen);
             t1.Start();
-            t2 = new Thread(rx.sendOffer);
+            t3 = new Thread(rx.sendOffer);
+            t3.Start();
             t2 =new Thread(tx.SendRequests);
             t2.Start();
             new Thread(() => rx.TcpReciveConnection()).Start();
