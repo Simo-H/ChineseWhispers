@@ -77,11 +77,7 @@ namespace ChineseWhispers
                     byte[] dataBuffer = new byte[20];
                     try
                     {
-                        if (CWsystem.t3.IsAlive)
-                        {
-                            Thread.Sleep(500);
-                            
-                        }
+                        
                         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
