@@ -173,6 +173,7 @@ namespace ChineseWhispers
 
                 CWsystem.writer.WriteToLog(e.Message);
                 Console.WriteLine(e.Message);
+                CWsystem.t2.Start();
                 //UdpListen();
             }
         }

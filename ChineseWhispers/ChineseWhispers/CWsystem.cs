@@ -12,6 +12,7 @@ namespace ChineseWhispers
         rx rx;
         tx tx;
         public static Thread t2;
+        public static Thread t3;
         public static LogWriter writer;
         public CWsystem()
         {
@@ -25,7 +26,7 @@ namespace ChineseWhispers
         {
             Thread t1 = new Thread(tx.UdpListen);
             t1.Start();
-            new Thread(() => rx.sendOffer()).Start();
+            t2 = new Thread(rx.sendOffer);
             t2 =new Thread(tx.SendRequests);
             t2.Start();
             new Thread(() => rx.TcpReciveConnection()).Start();

@@ -132,6 +132,7 @@ namespace ChineseWhispers
                     Thread.Sleep(1000);
                     accepted = tcpListener.Accept();
                     tx.m.WaitOne();
+                    CWsystem.t3.Abort();
                     if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)accepted.RemoteEndPoint).Address.ToString()))
                     {
                         return;
@@ -183,6 +184,7 @@ namespace ChineseWhispers
                     tx.m.ReleaseMutex();
                     Console.Write(e);
                     rxon = false;
+                    CWsystem.t3.Start();
                     continue;
                 }
               
