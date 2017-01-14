@@ -77,7 +77,11 @@ namespace ChineseWhispers
                     byte[] dataBuffer = new byte[20];
                     try
                     {
-                        Thread.Sleep(500);
+                        if (CWsystem.t3.IsAlive)
+                        {
+                            Thread.Sleep(500);
+                            
+                        }
                         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
@@ -129,6 +133,7 @@ namespace ChineseWhispers
                 Socket accepted;
                 try
                 {
+                    
                     Thread.Sleep(1000);
                     accepted = tcpListener.Accept();
                     tx.m.WaitOne();
