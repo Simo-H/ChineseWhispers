@@ -26,6 +26,7 @@ namespace ChineseWhispers
             try
             {
                 m= new Mutex();
+                m2 = new Mutex();
                 txon = false;
                 tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
