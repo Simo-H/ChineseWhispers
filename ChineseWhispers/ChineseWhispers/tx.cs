@@ -64,12 +64,13 @@ namespace ChineseWhispers
                 
                 while (!rx.rxon)
                 {
-
+                    //m.ReleaseMutex();
                     byte[] dataByte = new byte[26];
                     IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                     EndPoint remote = (EndPoint)(sender);
                     int recv = udp.ReceiveFrom(dataByte, ref remote);
-                    if (recv != 26)
+                    m.WaitOne();
+                    if (recv != 26 && !rx.rxon)
                     {
                         continue;
                     }
@@ -84,17 +85,20 @@ namespace ChineseWhispers
 
                     CWsystem.writer.WriteToLog("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received UDP offer message: " + networking17+" "+randomInt + " From IP :" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
                     System.Console.WriteLine("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " received UDP offer message: " + networking17 + " " + randomInt + " From IP :" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
+                    //m.WaitOne();
 
                     CWsystem.writer.WriteToLog("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Trying to connect via TCP to IP: " + ((IPEndPoint)(remotEndPoint)).Address + " Port " + ((IPEndPoint)(remotEndPoint)).Port);
                     System.Console.WriteLine("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Trying to connect via TCP to IP: " + ((IPEndPoint)(remotEndPoint)).Address + " Port " + ((IPEndPoint)(remotEndPoint)).Port);
                     ConnectTcp(remotEndPoint);
                     //Console.WriteLine("Message: ");
+                    //m.ReleaseMutex();
                 }
             }
             catch (Exception e)
             {
                 CWsystem.writer.WriteToLog(e.Message);
                 Console.WriteLine(e);
+                m.ReleaseMutex();
             }
         }
 
@@ -104,16 +108,16 @@ namespace ChineseWhispers
             {
                 //m.WaitOne();
                 tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                //if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)remoteEndPoint).Address.ToString()))
-                //{
-                //    return;
-                //}
-                //tcpClient.Connect(remoteEndPoint);
+                if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)remoteEndPoint).Address.ToString()))
+                {
+                    return;
+                }
+                tcpClient.Connect(remoteEndPoint);
                 rx.connectedIp = ((IPEndPoint)(remoteEndPoint)).Address;
+                txon = true;
+                m.ReleaseMutex();
                 Console.WriteLine("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
                 CWsystem.writer.WriteToLog("IP: " + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " Connected succesfully via TCP to IP: " + ((IPEndPoint)(remoteEndPoint)).Address + " Port " + ((IPEndPoint)(remoteEndPoint)).Port);
-                txon = true;
-                //m.ReleaseMutex();
                
                 byte[] msg;
                 while (true)
@@ -154,7 +158,7 @@ namespace ChineseWhispers
             }
             catch (Exception e)
             {
-              //  m.ReleaseMutex();
+                m.ReleaseMutex();
 
                 txon = false;
 
@@ -163,7 +167,7 @@ namespace ChineseWhispers
 
                 CWsystem.writer.WriteToLog(e.Message);
                 Console.WriteLine(e.Message);
-                UdpListen();
+                //UdpListen();
             }
         }
 
