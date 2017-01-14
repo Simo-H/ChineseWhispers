@@ -77,10 +77,11 @@ namespace ChineseWhispers
                     byte[] dataBuffer = new byte[20];
                     try
                     {
+                        Thread.Sleep(500);
                         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
-                        tx.m2.WaitOne();
+                        //tx.m2.WaitOne();
                         string strData = Encoding.ASCII.GetString(dataBuffer);
                         List<byte> msgList = new List<byte>();
                         if (recv != 20 || ((IPEndPoint)remote).Address.ToString().Equals(ipLocal.ToString())||(connectedIp!=null&& ((IPEndPoint)remote).Address.ToString().Equals(connectedIp.ToString())))
@@ -105,7 +106,7 @@ namespace ChineseWhispers
                         byte[] Port = BitConverter.GetBytes(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
                         Array.Copy(Port, 0, message, 24, 2);
                         udp.SendTo(message, remote);
-                        tx.m2.ReleaseMutex();
+                        //tx.m2.ReleaseMutex();
                         CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(networking17) + BitConverter.ToInt32(randomInt, 0) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
                         Console.WriteLine("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(networking17) + BitConverter.ToInt32(randomInt, 0) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
 
