@@ -80,11 +80,7 @@ namespace ChineseWhispers
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
                         tx.m.WaitOne();
-                        if (!rxon)
-                        {
-                            continue;
-                            
-                        }
+                        
                         string strData = Encoding.ASCII.GetString(dataBuffer);
                         List<byte> msgList = new List<byte>();
                         if (recv != 20 || ((IPEndPoint)remote).Address.ToString().Equals(ipLocal.ToString())||(connectedIp!=null&& ((IPEndPoint)remote).Address.ToString().Equals(connectedIp.ToString())))
