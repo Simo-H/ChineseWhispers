@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ChineseWhispers
 {
+    /// <summary>
+    /// This is the ctor of the complete system
+    /// </summary>
     class CWsystem
     {
         rx rx;
@@ -21,7 +24,9 @@ namespace ChineseWhispers
             writer = LogWriter.Instance;
             
         }
-
+        /// <summary>
+        /// This method start of the system components.
+        /// </summary>
         public void run()
         {
             Thread t1 = new Thread(tx.UdpListen);

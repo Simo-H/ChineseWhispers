@@ -13,7 +13,7 @@ namespace ChineseWhispers
 {
     class rx
     {
-       static byte[] Buffer { get; set; }
+        
         public static bool rxon;
         Socket tcpListener;
         Socket udp;
@@ -21,7 +21,10 @@ namespace ChineseWhispers
         public static string message;
         public static IPAddress connectedIp;
         public static bool abortT3;
-        
+        public byte[] Buffer;
+        /// <summary>
+        /// rx ctor
+        /// </summary>
         public rx()
         {
             rxon = false;
@@ -30,7 +33,7 @@ namespace ChineseWhispers
 
             ipLocal = GetLocalIPAddress();
 
-
+                    //choosing ports
                     for (int i = 6001; i < 7000; i++)
                     {
                         try {
@@ -47,27 +50,13 @@ namespace ChineseWhispers
                     }                   
                        
             tcpListener.Listen(1);
-            //udp.Listen(1);
+            
         }
 
-        public void startTCP()
-        {
-            for(int i = 6001; i < 7000; i++)
-                    {
-                try
-                {
-                    tcpListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    tcpListener.Bind(new IPEndPoint(ipLocal, i));
-                    
-
-                    break;
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-        }
+        /// <summary>
+        /// This method listens to udp broadcasts and respond to a broadcast with an offer to connect.
+        /// the method run with a thread of its own, aborting (not responding to a broadcast) if a successful connection occured.
+        /// </summary>
         public void sendOffer()
         {
             while (true)
@@ -78,19 +67,14 @@ namespace ChineseWhispers
                     byte[] dataBuffer = new byte[20];
                     try
                     {
-                        
                             Thread.Sleep(500);
                         if (abortT3)
                         {
-                            while (true)
-                            {
-                                
-                            }
+                            return;
                         }
                         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
-                        //tx.m2.WaitOne();
                         string strData = Encoding.ASCII.GetString(dataBuffer);
                         List<byte> msgList = new List<byte>();
                         if (recv != 20 || ((IPEndPoint)remote).Address.ToString().Equals(ipLocal.ToString())||(connectedIp!=null&& ((IPEndPoint)remote).Address.ToString().Equals(connectedIp.ToString())))
@@ -115,7 +99,6 @@ namespace ChineseWhispers
                         byte[] Port = BitConverter.GetBytes(Convert.ToInt16(((IPEndPoint)tcpListener.LocalEndPoint).Port));
                         Array.Copy(Port, 0, message, 24, 2);
                         udp.SendTo(message, remote);
-                        //tx.m2.ReleaseMutex();
                         CWsystem.writer.WriteToLog("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(networking17) + BitConverter.ToInt32(randomInt, 0) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
                         Console.WriteLine("IP:" + rx.GetLocalIPAddress().ToString() + " Port: " + ((IPEndPoint)(udp.LocalEndPoint)).Port.ToString() + " sent UDP offer message: " + Encoding.ASCII.GetString(networking17) + BitConverter.ToInt32(randomInt, 0) + " From IP:" + ((IPEndPoint)(remote)).Address + " Port " + ((IPEndPoint)(remote)).Port);
 
@@ -129,12 +112,15 @@ namespace ChineseWhispers
             }
         }
 
-
+        /// <summary>
+        /// This method listening for incoming tcp connections attemps. after successfuly connected to, after recieving a message
+        /// change one latter of the message and prints the message to the console 
+        /// </summary>
         public void TcpReciveConnection()
         {
             while (true)
             {
-                //startTCP();
+                
                 Socket accepted;
                 try
                 {
@@ -202,7 +188,10 @@ namespace ChineseWhispers
                 // message=strData;
             }
         }
-
+/// <summary>
+/// gets the local ip adresses of the inter network.
+/// </summary>
+/// <returns></returns>
         public static IPAddress GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());

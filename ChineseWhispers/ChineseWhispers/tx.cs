@@ -20,7 +20,9 @@ namespace ChineseWhispers
         //TcpClient tcp;
         private Socket tcpClient;
         private Socket udp;
-
+        /// <summary>
+        /// tx ctor
+        /// </summary>
         public tx()
         {
             try
@@ -42,6 +44,9 @@ namespace ChineseWhispers
             }
 
         }
+        /// <summary>
+        /// This method send broadcast messages, requesting to connect to a server.
+        /// </summary>
         public void SendRequests()
         {
             while (!txon && !rx.rxon)
@@ -59,6 +64,11 @@ namespace ChineseWhispers
             }
         }
 
+        /// <summary>
+        /// This method listens to connections offers, offered by severs which recived the broadcast request messages.
+        /// after a successful connection to a servers. passing a message recived from the rx component or prompting the user to insert
+        /// a message to be passed on. 
+        /// </summary>
         public void UdpListen()
         {
             try
@@ -106,6 +116,11 @@ namespace ChineseWhispers
             }
         }
 
+        /// <summary>
+        /// This methods connect to a remote end point via tcp connection. after a succesful connection, passing a message if the rx component
+        /// is connected or prompting the user to insert a massage to pass on.
+        /// </summary>
+        /// <param name="remoteEndPoint"></param>
         private void ConnectTcp(EndPoint remoteEndPoint)
         {
             try
@@ -177,7 +192,14 @@ namespace ChineseWhispers
                 //UdpListen();
             }
         }
-
+        /// <summary>
+        /// This method recieve a byta array holding data of an offer message. converting it from byte to readable variables.
+        /// the data is used to connect to a remote end point.
+        /// </summary>
+        /// <param name="dataByte"></param>
+        /// <param name="networking17"></param>
+        /// <param name="randomInt"></param>
+        /// <param name="remoteEndPoint"></param>
         private void readOfferMessage(byte[] dataByte, out string networking17, out int randomInt, out EndPoint remoteEndPoint)
         {
             byte[] networking17byte = new byte[16];
@@ -194,7 +216,9 @@ namespace ChineseWhispers
             short port = BitConverter.ToInt16(portShort, 0);
             remoteEndPoint = new IPEndPoint(ip, port);
         }
-
+        /// <summary>
+        /// This method used to read input from the console entered by the user.
+        /// </summary>
         public void readThread()
         {
             Console.WriteLine("Please enter a message");
