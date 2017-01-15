@@ -82,7 +82,10 @@ namespace ChineseWhispers
                             Thread.Sleep(500);
                         if (abortT3)
                         {
-                            CWsystem.t3.Abort();
+                            while (true)
+                            {
+                                
+                            }
                         }
                         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                         EndPoint remote = (EndPoint)(sender);
