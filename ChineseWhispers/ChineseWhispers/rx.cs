@@ -20,11 +20,12 @@ namespace ChineseWhispers
         IPAddress ipLocal;
         public static string message;
         public static IPAddress connectedIp;
+        public static bool abortT3;
         
         public rx()
         {
             rxon = false;
-
+            abortT3 = false;
             udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
             ipLocal = GetLocalIPAddress();
@@ -78,6 +79,11 @@ namespace ChineseWhispers
                     try
                     {
                         
+                            Thread.Sleep(500);
+                        if (abortT3)
+                        {
+                            CWsystem.t3.Abort();
+                        }
                         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                         EndPoint remote = (EndPoint)(sender);
                         int recv = udp.ReceiveFrom(dataBuffer, ref remote);
@@ -133,7 +139,8 @@ namespace ChineseWhispers
                     Thread.Sleep(1000);
                     accepted = tcpListener.Accept();
                     tx.m.WaitOne();
-                    CWsystem.t3.Abort();
+                    //CWsystem.t3.Abort();
+                    abortT3 = true;
                     if (rx.connectedIp != null && rx.connectedIp.ToString().Equals(((IPEndPoint)accepted.RemoteEndPoint).Address.ToString()))
                     {
                         return;
